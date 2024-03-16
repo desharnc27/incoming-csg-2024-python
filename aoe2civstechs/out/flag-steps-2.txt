@@ -1,0 +1,3 @@
+answer------->Cumans,Armenians,Aztecs,Koreans,Saracens,Georgians,Gurjaras,Byzantines,Franks,Treadmill_Crane,Heavy_Cavalry_Archer,Thumb_Ring,Bracer,Husbandry,Dry_Dock,Heavy_Demolition_Ship,Sanctity,Redemption,Bloodlines,Ring_Archer_Armor
+sha1(answer)->b9e43ad8a2832f47ffc793c94f46dba2478bab8d
+Flag--------->FLAG{b9e43ad8a2832f47ffc793c94f46dba2478bab8d}

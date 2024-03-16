@@ -1,0 +1,3 @@
+answer------->Japanese,Slavs,Ethiopians,Spanish,Sicilians,Crop_Rotation,Bombard_Cannon,Gold_Shaft_Mining,Blast_Furnace,Bloodlines,Heated_Shot
+sha1(answer)->4e0d18448c7a6cd1aa8c6af049fb897fb73f6fe8
+Flag--------->FLAG{4e0d18448c7a6cd1aa8c6af049fb897fb73f6fe8}

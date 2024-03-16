@@ -1,0 +1,2 @@
+All description is in the pdf, which also contains the description of the second challenge, since they share common context.
+Context is shared, but flags are independent, so you don't need one before trying the other.
