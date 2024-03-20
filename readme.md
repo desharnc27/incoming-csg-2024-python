@@ -26,7 +26,7 @@ The repo is organized in many subfolder:
 - iaccuse, zscorescam, aoe2civstechs contain code and data specific to their respective puzzle
 - commonpy and commonfiles contain general functions or tools used by all puzzles
 
-Note that participants did not need to code as much code as is used here. A lot of code in this project is for additional confidence for the puzzle cretor (make sure there is no error). Roughly speaking, you don't need to look in commonfiles, commonpy and validating files to understand the solutions.
+Note that participants did not need to code as much code as is used here. A lot of code in this project is for additional confidence for the puzzle creator (make sure there is no error). Roughly speaking, you don't need to look in commonfiles, commonpy and validating files to understand the solutions.
 
 ### How to execute
 
