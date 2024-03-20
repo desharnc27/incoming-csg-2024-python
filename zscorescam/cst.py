@@ -15,12 +15,4 @@ OUTPUT_PATH = PROJECT.path(OUTPUT_FILENAME)
 
 LBERNARD = "Lily Bernard"
 
-"""
-PROJECT_NAME = "zscorescam"
-PROJECT_PATH = PROJECT_NAME if ROOT == "" else ROOT + os.sep + PROJECT_NAME
-
-PUZZLE_TITLE = "Lily Bernard at Learngame-HC College"
-# PUZZLE_TOPIC = "Statistics"
-PUZZLE_TAGS = ["mathematics", "statistics"]
-
-"""
+MINI_STEP_ALGO = False

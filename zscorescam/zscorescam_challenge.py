@@ -1,9 +1,10 @@
 import math
 from fractions import Fraction
+import random
 from typing import List, Tuple
 
 from commonpy import my_utils
-from zscorescam.cst import INPUT_PATH, INPUT_FILENAME, LBERNARD, PROJECT as PJ
+from zscorescam.cst import INPUT_PATH, INPUT_FILENAME, LBERNARD, PROJECT as PJ, MINI_STEP_ALGO
 
 
 # General comments
@@ -152,31 +153,7 @@ def optimize_cote_z(bern_idx: int, initial_notes: List[int]) -> List[int]:
     print(f"best_floor: {best_floor}")
     print(f"best_z2: {float(best_z2)}")
     print(f"best_z: {math.sqrt(float(best_z2))}")
-
     return best_solution
-
-
-"""
-def make_info_co_file(sha1_answer: str):
-    my_utils.put_puzzle_info_in_files(PROJECT_PATH,
-                                      PUZZLE_TITLE,
-                                      ",".join(PUZZLE_TAGS),
-                                      sha1_answer)
-
-
-
-def make_writeup(sha1_answer: str):
-    my_utils.make_writeup(PROJECT_PATH, PUZZLE_TITLE, my_utils.my_flag(sha1_answer), 2024)
-
-
-def make_challenge_yml(sha1_answer: str):
-    my_utils.make_challenge_yml(PROJECT_PATH,
-                                PROJECT_NAME,
-                                PUZZLE_TITLE,
-                                my_utils.my_flag(sha1_answer),
-                                PUZZLE_TAGS,
-                                ["data.txt"])
-"""
 
 
 def main():
@@ -203,7 +180,12 @@ def main():
 
     sorted_bern_idx: int = tracking.index(bern_idx)
 
+    if MINI_STEP_ALGO:
+        # MINI_STEP_ALGO on this dataset does NOt work since it gets stuck in a local maximum (not global maximum)
+        # Many teams fell in this trap and got a hard floor of 84.08%
+        print(f"MINISTEPALGO solution: {optimize_cote_z_with_ministepsalgo(sorted_bern_idx, sorted_notes)}")
     tricked_notes: List[int] = optimize_cote_z(sorted_bern_idx, sorted_notes)
+    print(f"valid solution: {tricked_notes}")
 
     # Put back the notes in alphabetic order of students
     remapped_notes: List[int] = my_utils.restore_to_original_order(tricked_notes, tracking)
@@ -227,3 +209,73 @@ def main():
     PJ.make_writeup(flag, 2024)
     PJ.make_challenge_yml(flag, [INPUT_FILENAME])
     # make_info_co_file(sha1_answer)
+
+
+################################################################################
+
+# ----------------- Everything below is not needed by participants -------------
+
+
+# begin ------- Only for testing, not used for solving --------
+
+def apply_hard_floor_on_notes(initial_notes: List[int], hard_floor):
+    return [note if note > hard_floor else hard_floor for note in initial_notes]
+
+
+def validate_hard_floor_z2_calculation(initial_notes: List[int], hard_floor, note_idx):
+    tricked_notes = apply_hard_floor_on_notes(initial_notes, hard_floor)
+    res_safe = compute_z2_with_data(note_idx, tricked_notes)
+    res = compute_z2_with_hard_floor(note_idx, initial_notes, hard_floor)
+    print(res)
+    print(res_safe)
+
+
+def validations():
+    temp = 0
+    initial_notes = [0]
+    nb_notes = 75
+    for _ in range(nb_notes - 1):
+        temp = temp + random.randint(1, 7)
+        initial_notes.append(temp)
+    target_idx = int(0.8 * nb_notes)
+    floor = initial_notes[int(0.6 * nb_notes)]
+    validate_hard_floor_z2_calculation(initial_notes, floor, target_idx)
+
+
+# end --------- Only for testing, not used for solving --------
+
+# begin ------- Naive convergent method --------
+
+
+# This might NOT work since it can get stuck in a local maximum (not global maximum)
+def optimize_cote_z_with_ministepsalgo(target_idx, initial_notes):
+    notes = initial_notes[:]
+    summ, sum_sq = create_summary(notes)
+    n = len(notes)
+    target_note = notes[target_idx]
+    while True:
+        change = False
+        z2 = compute_z2_with_summary(target_note, n, summ, sum_sq)
+        for i in range(target_idx):
+            for sg in (1, -1):
+                if (notes[i] < notes[i + 1] and sg == 1) or (
+                        sg == -1 and notes[i] > notes[i - 1] and notes[i] > initial_notes[i]):
+                    # Check if  changing ith grade by 1 improves z score
+                    new_sum = summ + sg
+                    new_sum_sq = sum_sq + notes[i] * 2 * sg + 1
+                    new_z2 = compute_z2_with_summary(target_note, n, new_sum, new_sum_sq)
+                    if new_z2 > z2:
+                        # Apply change
+                        z2 = new_z2
+                        summ = new_sum
+                        sum_sq = new_sum_sq
+                        notes[i] = notes[i] + sg
+                        change = True
+                        # No reason to try opposite sign
+                        continue
+        if not change:
+            # z2 can't be improved from here by changing only one note
+            # We are in local optimum, let's hope it's global optimum
+            return notes
+
+# end --------- Naive convergent method --------
